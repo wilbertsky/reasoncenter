@@ -1,3 +1,9 @@
+# Reason Center
+
+This is a new Symfony web app for integration tools with Reason Center community center.
+The below instructions will help to get the Symfony Docker started with Docker and Franken PHP
+which was used to make this a faster setup process.
+
 # Symfony Docker
 
 A [Docker](https://www.docker.com/)-based installer and runtime for the [Symfony](https://symfony.com) web framework,
