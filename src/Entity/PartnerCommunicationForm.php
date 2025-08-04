@@ -17,18 +17,16 @@ use Symfony\Component\Serializer\Attribute\Groups;
     operations: [
         new Get(uriTemplate: '/events/{id}'),
         new GetCollection(uriTemplate: '/events'),
-//        new Post(uriTemplate: '/events', processor: PartnerCommunicationFormProcessor::class),
     ],
     normalizationContext: ['groups' => ['PartnerCommunicationForm:read']],
-//    denormalizationContext: ['groups' => ['PartnerCommunicationForm:write']],
-//    processor: PartnerCommunicationFormProcessor::class,
 )]
 
 #[Post(
-    uriTemplate:
-    '/events',
+    uriTemplate: '/events',
     denormalizationContext: ['PartnerCommunicationForm:write'],
+    //deserialize: false,
     processor: PartnerCommunicationFormProcessor::class,
+
 )]
 
 #[ORM\Entity(repositoryClass: PartnerCommunicationFormRepository::class)]
@@ -68,6 +66,12 @@ class PartnerCommunicationForm
     #[Groups(['PartnerCommunicationForm:read', 'PartnerCommunicationForm:write'])]
     private ?string $eventImage = null;
 
+    #[ORM\Column(name: 'image_id', nullable: true)]
+    #[ORM\ManyToOne(targetEntity: MediaObject::class, inversedBy: 'partnerCommunicationForms')]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['PartnerCommunicationForm:read', 'PartnerCommunicationForm:write'])]
+    private int $imageId;
+
     #[ORM\ManyToOne(inversedBy: 'partnerCommunicationForms')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['PartnerCommunicationForm:read'])]
@@ -80,6 +84,12 @@ class PartnerCommunicationForm
     #[ORM\Column]
     #[Groups(['PartnerCommunicationForm:read', 'PartnerCommunicationForm:write'])]
     private ?bool $isPublished = null;
+
+    #[ORM\ManyToOne(targetEntity: MediaObject::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[ApiProperty(types: ['https://schema.org/image'])]
+    #[Groups(['PartnerCommunicationForm:read', 'PartnerCommunicationForm:write'])]
+    public ?MediaObject $image = null;
 
     public function getId(): ?int
     {
@@ -153,6 +163,18 @@ class PartnerCommunicationForm
         return $this;
     }
 
+    public function getImageId(): int
+    {
+        return $this->imageId;
+    }
+
+    public function setImageId(int $imageId): static
+    {
+        $this->imageId = $imageId;
+
+        return $this;
+    }
+
     public function getEventDescription(): ?string
     {
         return $this->eventDescription;
@@ -212,4 +234,6 @@ class PartnerCommunicationForm
 
         return $this;
     }
+
+
 }

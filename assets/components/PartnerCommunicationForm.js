@@ -1,13 +1,12 @@
 import React from 'react';
-import {FormControl, FormLabel, Sheet, styled} from "@mui/joy";
+import {Button, FormControl, FormLabel, Grid, Input, Sheet, styled, Typography} from "@mui/joy";
 import '@fontsource/inter';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
-import {Button, Card, CardContent, Grid, Input, Typography} from "@mui/joy";
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DateTimePicker} from "@mui/x-date-pickers";
-import {CardHeader, TextareaAutosize as BaseTextareaAutosize} from "@mui/material";
+import {TextareaAutosize as BaseTextareaAutosize} from "@mui/material";
 import InputFileUpload from "./FileUpload";
 
 const blue = {
@@ -78,13 +77,41 @@ const submitPartnerForm = async (formData) => {
   const capturedForm = {
     eventDescription: eventDescription,
     eventName: eventName,
-    partner: {id: parseInt(groupName)},
+    partnerId: parseInt(groupName),
     eventStartTime: startTime,
     eventEndTime: endTime,
     published: false
   };
 
-  // Send to API-Platform for PartnerCommunicationForm.
+    // Send image file to API upload.
+    try {
+      console.log('eventImage', eventImage);
+      const formData = new FormData();
+      formData.set('file', eventImage);
+      formData.append('file', eventImage);
+      console.log('formData', formData);
+      const response = await fetch('/api/media_objects', {
+        body: formData,
+      });
+
+      if (!response.ok) {
+        console.log('response not ok');
+        // throw new Error('Network response was not ok');
+      }
+
+      const responseData = await response.json();
+      // Handle the response data
+      console.log(responseData);
+
+      // Add the ID and contentURL for PartnerCommunicationForm.
+      capturedForm.imageId = responseData.id;
+      capturedForm.eventImage = responseData.contentUrl;
+
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
+    // Send to API-Platform for PartnerCommunicationForm.
     try {
       const response = await fetch('/api/events', {
         method: 'POST',
@@ -105,8 +132,6 @@ const submitPartnerForm = async (formData) => {
     } catch (error) {
       console.error('Error:', error);
     }
-
-    // Send image file to possible other API upload to AWS image repo?
 
 }
 
