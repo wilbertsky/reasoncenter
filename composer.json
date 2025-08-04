@@ -11,6 +11,7 @@
         "ext-iconv": "*",
         "api-platform/doctrine-orm": "^4.0",
         "api-platform/symfony": "^4.0",
+        "doctrine/annotations": "^2.0",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",
@@ -35,7 +36,8 @@
         "symfony/validator": "7.1.*",
         "symfony/webpack-encore-bundle": "^2.2",
         "symfony/yaml": "7.1.*",
-        "twig/twig": "^3.0"
+        "twig/twig": "^3.0",
+        "vich/uploader-bundle": "^2.5"
     },
     "config": {
         "allow-plugins": {
