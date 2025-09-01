@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
-#[ApiResource(paginationItemsPerPage: 30)]
+#[ApiResource(paginationItemsPerPage: 10)]
 #[GetCollection]
 #[ApiFilter(
     SearchFilter::class, properties: ['title' => 'ipartial', 'author1' => 'ipartial', 'author2' => 'ipartial', 'genre' => 'ipartial'],
@@ -81,7 +81,7 @@ class Book
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $genre = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: "text", nullable: true)]
     private ?string $synopsis = null;
 
     #[ORM\Column(length: 255, nullable: true)]
