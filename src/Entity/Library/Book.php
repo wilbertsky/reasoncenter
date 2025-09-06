@@ -2,6 +2,7 @@
 
 namespace App\Entity\Library;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -9,27 +10,56 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Doctrine\Filter\DistinctFilter;
 use App\Repository\Library\BookRepository;
+use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
-#[ApiResource(paginationItemsPerPage: 10)]
-#[GetCollection]
-#[ApiFilter(
-    SearchFilter::class, properties: ['title' => 'ipartial', 'author1' => 'ipartial', 'author2' => 'ipartial', 'genre' => 'ipartial'],
-)]
-#[ApiFilter(
-    DistinctFilter::class, properties: ['distinct' => ''],
-)]
-#[Get]
+#[ApiResource(
+    order: [
+        'title' => 'asc'
+    ],
+    paginationItemsPerPage: 10)
+]
 #[ApiResource(
     shortName: 'Author',
     operations: [new GetCollection()],
     normalizationContext: ['groups' => ['author:read']],
     filters: [DistinctFilter::class],
+    order: ['author' => 'asc'],
     paginationEnabled: false,
 )]
+#[GetCollection]
+#[Get]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'title' => 'ipartial',
+        'author1' => 'ipartial',
+        'author2' => 'ipartial',
+        'genre' => 'ipartial',
+    ],
+)]
+#[ApiFilter(
+    DistinctFilter::class,
+    properties: [
+        'distinct' => '',
+    ],
+)]
+#[ApiFilter(
+    OrderFilter::class,
+    properties: [
+        'title',
+        'author1',
+        'author2',
+        'genre',
+    ],
+    arguments: [
+        'orderParameterName' => 'order'
+    ]
+)]
+
 class Book
 {
     #[ORM\Id]
