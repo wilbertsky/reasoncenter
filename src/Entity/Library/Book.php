@@ -20,8 +20,9 @@ use Symfony\Component\Serializer\Attribute\Groups;
     order: [
         'title' => 'asc'
     ],
-    paginationItemsPerPage: 10)
-]
+    paginationItemsPerPage: 10,
+    security: "is_granted('ROLE_API_USER')"
+)]
 #[ApiResource(
     shortName: 'Author',
     operations: [new GetCollection()],
@@ -29,9 +30,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
     filters: [DistinctFilter::class],
     order: ['author' => 'asc'],
     paginationEnabled: false,
+    security: "is_granted('ROLE_API_USER')"
 )]
-#[GetCollection]
-#[Get]
+#[GetCollection(
+    security: "is_granted('ROLE_API_USER')",
+)]
+#[Get(
+    security: "is_granted('ROLE_API_USER')",
+)]
 #[ApiFilter(
     SearchFilter::class,
     properties: [
